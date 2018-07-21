@@ -4,29 +4,47 @@ import './App.css'
 import BookList from './components/bookList'
 import BookSearch from './components/bookSearch'
 
+import { getAll } from './BooksAPI'
+
 class BooksApp extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.changeShelf = this.changeShelf.bind(this)
+  }
+
   state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
+    list: [],
     showSearchPage: false
   }
 
-  chageSearchPageHandler(change){
-    this.setState({showSearchPage:change})
+  componentDidMount(){
+    this.fetchBooks()
+  }
+
+  chageSearchPageHandler(change) {
+    this.setState({ showSearchPage: change })
+  }
+
+  fetchBooks() {
+    getAll().then(data => this.setState({ list: data }))
+  }
+
+  changeShelf(value) {
+    this.setState(state => {
+      return { list: state.list.filter(item => item.id !== value.id).concat(value) }
+    })
+
   }
 
   render() {
     return (
       <div className="app">
         {this.state.showSearchPage ? (
-          <BookSearch onReturnList={()=>this.chageSearchPageHandler(false)}/>
+          <BookSearch onChangeShelf={this.changeShelf} list={this.state.list} onReturnList={() => this.chageSearchPageHandler(false)} />
         ) : (
-          <BookList onGotoSearch={()=>this.chageSearchPageHandler(true)} />
-        )}
+            <BookList onChangeShelf={this.changeShelf} list={this.state.list} onGotoSearch={() => this.chageSearchPageHandler(true)} />
+          )}
       </div>
     )
   }
