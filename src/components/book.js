@@ -1,10 +1,20 @@
 import React, { Component } from 'react'
-
+import { update } from '../BooksAPI'
 class Book extends Component {
-    
-    componentWillMount(){
-        this.setState({book:this.props.item})
+    constructor(props){
+        super(props)
+        this.onUpdateShelf = this.onUpdateShelf.bind(this)
+        
     }
+
+   
+    onUpdateShelf(e)
+    {
+        this.props.onChangeShelf({...this.props.item,shelf:e.target.value})
+        update(this.props.item,e.target.value)
+        
+    }
+
     render() {
         return (
             <li>
@@ -12,8 +22,8 @@ class Book extends Component {
                     <div className="book-top">
                         <div className="book-cover" style={{ width: 128, height: 188, backgroundImage: `url("${this.props.item.imageLinks.thumbnail}")` }}></div>
                         <div className="book-shelf-changer">
-                            <select defaultValue={this.props.item.shelf}
-                                onChange={(e)=> this.props.onChangeShelf({...this.props.item,shelf:e.target.value})}>
+                            <select defaultValue={this.props.item.shelf?this.props.item.shelf:'none'} 
+                                onChange={this.onUpdateShelf}>
                                 <option value="move" disabled>Move to...</option>
                                 <option value="currentlyReading">Currently Reading</option>
                                 <option value="wantToRead">Want to Read</option>
