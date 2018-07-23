@@ -12,7 +12,8 @@ class BookSearch extends Component {
         this.fetchSearch = this.fetchSearch.bind(this)
         this.state = {
             term:'',
-            list: []
+            list: [],
+            notResult:false
         }
         
     }
@@ -29,17 +30,20 @@ class BookSearch extends Component {
         this.setState({term:e.target.value})
         setTimeout(() => {
             search(this.state.term).then(resp=>{
-                if(resp.length > 0){
-                    const resultado = [...this.props.list.filter(item=>{
-                        return resp.find(book => book.id === item.id)
-                    }),...resp.filter(item=>{
-                        return !this.props.list.find(book => book.id === item.id)
-                    })].sort()
-                    
+                if(resp && resp.length > 0){
+
+                    const resultado = resp.map(item=>{
+
+                        if(this.props.list.find(book=>book.id === item.id))
+                        {
+                            return this.props.list.find(book=>book.id === item.id)
+                        }
+                        return item
+                    })
                         this.setState({list:resultado})
                 }
                 else{
-                    this.setState({list:[]})
+                    this.setState({list:[],notResult:true})
                 }
             })
         }, 1000);
@@ -60,6 +64,7 @@ class BookSearch extends Component {
                 </div>
                 <div className="search-books-results">
                     <BookShelf title={`Serch of ${this.state.term}`} onChangeShelf={this.props.onChangeShelf} books={this.state.list}/>
+                    {(this.state.notResult) && <h2>Sem resultados para {this.state.term}</h2>}
                 </div>
             </div>
         )
