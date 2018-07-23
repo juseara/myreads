@@ -1,5 +1,5 @@
 import React from 'react'
-// import * as BooksAPI from './BooksAPI'
+import { Route } from 'react-router-dom'
 import './App.css'
 import BookList from './components/bookList'
 import BookSearch from './components/bookSearch'
@@ -18,7 +18,7 @@ class BooksApp extends React.Component {
     showSearchPage: false
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.fetchBooks()
   }
 
@@ -40,11 +40,12 @@ class BooksApp extends React.Component {
   render() {
     return (
       <div className="app">
-        {this.state.showSearchPage ? (
+        <Route exact path="/" render={() => (
+          <BookList onChangeShelf={this.changeShelf} list={this.state.list} onGotoSearch={() => this.chageSearchPageHandler(true)} />
+        )} />
+        <Route path="/search" render={() => (
           <BookSearch onChangeShelf={this.changeShelf} list={this.state.list} onReturnList={() => this.chageSearchPageHandler(false)} />
-        ) : (
-            <BookList onChangeShelf={this.changeShelf} list={this.state.list} onGotoSearch={() => this.chageSearchPageHandler(true)} />
-          )}
+        )} />
       </div>
     )
   }
