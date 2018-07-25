@@ -3,11 +3,6 @@ import { Link } from 'react-router-dom'
 import BookShelf from './bookShelf'
 class BookList extends Component {
 
-  constructor(props){
-    super(props)
-    
-  }
-
   render() {
     return (
       <div className="list-books">
@@ -16,9 +11,9 @@ class BookList extends Component {
         </div>
         <div className="list-books-content">
           <div>
-            <BookShelf title='Currenty Reading' onChangeShelf={this.props.onChangeShelf} books={this.props.list.filter(book => book.shelf === 'currentlyReading')} />
-            <BookShelf title='Want to Read' onChangeShelf={this.props.onChangeShelf} books={this.props.list.filter(book => book.shelf === 'wantToRead')} />
-            <BookShelf title='Read' onChangeShelf={this.props.onChangeShelf} books={this.props.list.filter(book => book.shelf === 'read')} />
+            <BookShelf shelf="currentlyReading" title='Currenty Reading' onChangeShelf={this.props.onChangeShelf} books={this.props.list.filter(book => book.shelf === 'currentlyReading')} />
+            <BookShelf shelf="wantToRead" title='Want to Read' onChangeShelf={this.props.onChangeShelf} books={this.props.list.filter(book => book.shelf === 'wantToRead')} />
+            <BookShelf shelf="read" title='Read' onChangeShelf={this.props.onChangeShelf} books={this.props.list.filter(book => book.shelf === 'read')} />
           </div>
         </div>
         <div className="open-search">

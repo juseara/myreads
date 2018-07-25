@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom'
 import { search } from '../BooksAPI'
 import BookShelf from './bookShelf'
 
-
-const merge = (a, b, p) => a.filter( aa => b.find ( bb => aa[p] !== bb[p]) ).concat(b)
 class BookSearch extends Component {
     constructor(props)
     {

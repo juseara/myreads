@@ -3,8 +3,9 @@ import { Route } from 'react-router-dom'
 import './App.css'
 import BookList from './components/bookList'
 import BookSearch from './components/bookSearch'
-
-import { getAll } from './BooksAPI'
+import HTML5Backend from 'react-dnd-html5-backend'
+import { DragDropContext } from 'react-dnd'
+import { getAll, update } from './BooksAPI'
 
 class BooksApp extends React.Component {
 
@@ -30,9 +31,11 @@ class BooksApp extends React.Component {
     getAll().then(data => this.setState({ list: data }))
   }
 
-  changeShelf(value) {
+  changeShelf(aValue,aShelf) {
+    const book = {...aValue,shelf:aShelf}
+    update(aValue,aShelf)
     this.setState(state => {
-      return { list: state.list.filter(item => item.id !== value.id).concat(value) }
+      return { list: state.list.filter(item => item.id !== book.id).concat(book) }
     })
 
   }
@@ -51,4 +54,4 @@ class BooksApp extends React.Component {
   }
 }
 
-export default BooksApp
+export default DragDropContext(HTML5Backend)(BooksApp)

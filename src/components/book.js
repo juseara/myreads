@@ -1,5 +1,27 @@
 import React, { Component } from 'react'
-import { update } from '../BooksAPI'
+import { DragSource } from 'react-dnd';
+
+const bookSource = {
+    beginDrag(props){
+        return props.item
+    },
+    
+    endDrag(props,monitor,component){
+        
+        if(!monitor.didDrop())
+        {
+            return
+        }
+        return props.item
+    }
+}
+function collect(connect,monitor){
+    return{
+        connectDragSource:connect.dragSource(),
+        connectDragPreview:connect.dragPreview(),
+        isDragging:monitor.isDragging()
+    }
+}
 class Book extends Component {
     constructor(props){
         super(props)
@@ -10,19 +32,19 @@ class Book extends Component {
    
     onUpdateShelf(e)
     {
-        this.props.onChangeShelf({...this.props.item,shelf:e.target.value})
-        update(this.props.item,e.target.value)
-        
+        this.props.onChangeShelf(this.props.item,e.target.value)
     }
 
     render() {
-        return (
+        const {isDragging,connectDragSource, item } = this.props
+        const opacty = isDragging ? 0 : 1
+        return connectDragSource(
             <li>
-                <div className="book">
+                <div className="book" style={{opacity:opacty}}>
                     <div className="book-top">
-                        <div className="book-cover" style={{ width: 128, height: 188, backgroundImage: `url("${this.props.item.imageLinks.thumbnail}")` }}></div>
+                        <div className="book-cover" style={{ width: 128, height: 188, backgroundImage: `url("${item.imageLinks.thumbnail}")` }}></div>
                         <div className="book-shelf-changer">
-                            <select defaultValue={this.props.item.shelf?this.props.item.shelf:'none'} 
+                            <select defaultValue={item.shelf ? item.shelf:'none'} 
                                 onChange={this.onUpdateShelf}>
                                 <option value="move" disabled>Move to...</option>
                                 <option value="currentlyReading">Currently Reading</option>
@@ -32,12 +54,12 @@ class Book extends Component {
                             </select> 
                         </div>
                     </div>
-                    <div className="book-title">{ this.props.item.title }</div>
-                    <div className="book-authors">{ this.props.item.authors}</div>
+                    <div className="book-title">{ item.title }</div>
+                    <div className="book-authors">{ item.authors}</div>
                 </div>
             </li>
         )
     }
 }
 
-export default Book
+export default DragSource('book', bookSource, collect)(Book)
