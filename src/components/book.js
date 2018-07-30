@@ -1,12 +1,12 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { DragSource } from 'react-dnd';
-
+const imageNotFound = require('../assets/image/not-found.png')
 const bookSource = {
     beginDrag(props){
         return props.item
     },
     
-    endDrag(props,monitor,component){
+    endDrag(props,monitor,PureComponent){
         
         if(!monitor.didDrop())
         {
@@ -22,30 +22,21 @@ function collect(connect,monitor){
         isDragging:monitor.isDragging()
     }
 }
-class Book extends Component {
-    constructor(props){
-        super(props)
-        this.onUpdateShelf = this.onUpdateShelf.bind(this)
-        
-    }
-
-   
-    onUpdateShelf(e)
-    {
-        this.props.onChangeShelf(this.props.item,e.target.value)
-    }
-
+    
+class Book extends PureComponent {
+    
     render() {
         const {isDragging,connectDragSource, item } = this.props
         const opacty = isDragging ? 0 : 1
+        const thumbnail = item.imageLinks ? item.imageLinks.smallThumbnail || item.imageLinks.thumbnail : imageNotFound
         return connectDragSource(
             <li>
                 <div className="book" style={{opacity:opacty}}>
                     <div className="book-top">
-                        <div className="book-cover" style={{ width: 128, height: 188, backgroundImage: `url("${item.imageLinks.thumbnail}")` }}></div>
+                        <div className="book-cover" style={{ width: 128, height: 188, backgroundImage: `url("${thumbnail}")` }}></div>
                         <div className="book-shelf-changer">
                             <select defaultValue={item.shelf ? item.shelf:'none'} 
-                                onChange={this.onUpdateShelf}>
+                                onChange={(e) => this.props.onChangeShelf(this.props.item,e.target.value)}>
                                 <option value="move" disabled>Move to...</option>
                                 <option value="currentlyReading">Currently Reading</option>
                                 <option value="wantToRead">Want to Read</option>
@@ -54,8 +45,8 @@ class Book extends Component {
                             </select> 
                         </div>
                     </div>
-                    <div className="book-title">{ item.title }</div>
-                    <div className="book-authors">{ item.authors}</div>
+                    <div className="book-title">{ item.title || 'No title' }</div>
+                    <div className="book-authors">{ item.authors || 'no authors'}</div>
                 </div>
             </li>
         )

@@ -19,18 +19,15 @@ class BooksApp extends React.Component {
     showSearchPage: false
   }
 
-  componentDidMount() {
-    this.fetchBooks()
+  async componentDidMount() {
+    const books = await getAll()
+    this.setState({list:books})
   }
 
   chageSearchPageHandler(change) {
     this.setState({ showSearchPage: change })
   }
-
-  fetchBooks() {
-    getAll().then(data => this.setState({ list: data }))
-  }
-
+  
   changeShelf(aValue,aShelf) {
     const book = {...aValue,shelf:aShelf}
     update(aValue,aShelf)
